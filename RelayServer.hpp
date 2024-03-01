@@ -6,6 +6,7 @@
 
 using WsServer = websocketpp::server<websocketpp::config::asio>;
 
+// Manages websocket server as less as logical relays
 class RelayServer {
   WsServer _wsServer;
   int _nextConnId = 0;

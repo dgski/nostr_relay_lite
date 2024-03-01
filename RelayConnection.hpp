@@ -8,6 +8,7 @@
 
 #include "Utils.hpp"
 
+// Manages a single relay relationship
 class RelayConnection {
   std::function<void(const std::string&)> _sendMessage;
   std::function<void()> _closeConnection;
