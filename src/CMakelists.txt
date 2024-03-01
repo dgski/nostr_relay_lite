@@ -1,0 +1,2 @@
+add_executable(nrl main.cpp)
+target_link_libraries(nrl PRIVATE websocketpp::websocketpp ${OPENSSL_LIBRARIES} cxxopts::cxxopts)

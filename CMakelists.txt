@@ -7,6 +7,4 @@ find_package(websocketpp CONFIG REQUIRED)
 find_package(cxxopts CONFIG REQUIRED)
 
 
-add_executable(nrl main.cpp)
-
-target_link_libraries(nrl PRIVATE websocketpp::websocketpp ${OPENSSL_LIBRARIES} cxxopts::cxxopts)
+add_subdirectory(src)
