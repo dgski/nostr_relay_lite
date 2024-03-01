@@ -1,0 +1,7 @@
+{
+  "dependencies": [
+    "websocketpp",
+    "cxxopts",
+    "nlohmann-json"
+  ]
+}
