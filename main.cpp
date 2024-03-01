@@ -3,6 +3,7 @@
 #include <websocketpp/config/asio_no_tls.hpp>
 #include <websocketpp/server.hpp>
 #include <nlohmann/json.hpp>
+#include <cxxopts.hpp>
 
 using Server = websocketpp::server<websocketpp::config::asio>;
 
@@ -71,7 +72,18 @@ public:
   }
 };
 
-int main() {
+int main(int argc, const char* argv[]) {
+  cxxopts::Options options("nostr_relay_lite", "Simple relay server for Nostr");
+  options.add_options()
+    ("h,help", "Print help")
+    ("p,port", "Port to listen on", cxxopts::value<int>()->default_value("4001"));
+  const auto result = options.parse(argc, argv);
+  if (result.count("help")) {
+    std::cout << options.help() << std::endl;
+    return 0;
+  }
+  const int port = result["port"].as<int>();
+
   Server server;
   server.set_access_channels(websocketpp::log::alevel::none);
   server.init_asio();
@@ -99,7 +111,7 @@ int main() {
     });
   });
 
-  server.listen(4001);
+  server.listen(port);
   server.start_accept();
   server.run();
 
