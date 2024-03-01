@@ -59,18 +59,10 @@ public:
     auto filters = json[2];
 
     forEachMatchingEvent(_events, filters, [this, subId](const std::string& event) {
-      auto json = nlohmann::json::parse(event);
-      auto response = nlohmann::json::array();
-      response.push_back("EVENT");
-      response.push_back(subId);
-      response.push_back(json);
-      _sendMessage(response.dump());
+      _sendMessage(nlohmann::json::array({ "EVENT", subId, nlohmann::json::parse(event) }).dump());
     });
 
-    auto response = nlohmann::json::array();
-    response.push_back("EOSE");
-    response.push_back(subId);
-    _sendMessage(response.dump());
+    _sendMessage(nlohmann::json::array({ "EOSE", subId }).dump());
   }
 
   void handleEvent(const nlohmann::json& json) {
