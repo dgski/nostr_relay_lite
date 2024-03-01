@@ -36,11 +36,9 @@ public:
   void handleRequest(const nlohmann::json& json) {
     auto subId = json[1].get<std::string>();
     auto filters = json[2];
-
     Utils::forEachMatchingEvent(_events, filters, [this, subId](const std::string& event) {
       _sendMessage(nlohmann::json::array({ "EVENT", subId, nlohmann::json::parse(event) }).dump());
     });
-
     _sendMessage(nlohmann::json::array({ "EOSE", subId }).dump());
   }
 

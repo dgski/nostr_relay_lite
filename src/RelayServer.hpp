@@ -39,7 +39,6 @@ public:
     };
     auto& relay = _connIdToRelay.emplace(
       connId, RelayConnection(sendMessage, closeConnection, _events)).first->second;
-
     auto connection = _wsServer.get_con_from_hdl(connHandle);
     connection->set_message_handler([&relay](auto connHandle, auto msg) {
       relay.handleMessage(msg->get_payload());
