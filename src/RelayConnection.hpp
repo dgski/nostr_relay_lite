@@ -46,12 +46,12 @@ public:
 
   void handleEvent(const nlohmann::json& json) {
     auto event = json[1];
-    _events.push_back(event.dump());
     for (const auto& [subId, filters] : _subscriptions) {
       if (Utils::matchesAnyFilter(event, filters)) {
         _sendMessage(nlohmann::json::array({ "EVENT", subId, event }).dump());
       }
     }
+    _events.push_back(std::move(event));
   }
 
   void handleClose(const nlohmann::json& json) {
