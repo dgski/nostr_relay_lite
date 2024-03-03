@@ -60,14 +60,17 @@ bool matchesFilter(const nlohmann::json& event, const nlohmann::json& filter) {
   return true;
 };
 
+bool matchesAnyFilter(const nlohmann::json& event, const nlohmann::json& filters) {
+  return std::any_of(
+    filters.begin(), filters.end(),
+    [&event](const auto& filter) { return matchesFilter(event, filter); });
+}
+
 template<typename F>
 void forEachMatchingEvent(const std::vector<std::string>& events, const nlohmann::json& filters, F&& f) {
   for (const auto& event : events) {
     auto json = nlohmann::json::parse(event);
-    const bool match = std::all_of(
-      filters.begin(), filters.end(),
-      [&json](const auto& filter) { return matchesFilter(json, filter); });
-    if (match) {
+    if (const bool match = matchesAnyFilter(json, filters); match) {
       f(event);
     }
   }
