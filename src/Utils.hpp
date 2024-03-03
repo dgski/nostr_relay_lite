@@ -67,10 +67,9 @@ bool matchesAnyFilter(const nlohmann::json& event, const nlohmann::json& filters
 }
 
 template<typename F>
-void forEachMatchingEvent(const std::vector<std::string>& events, const nlohmann::json& filters, F&& f) {
+void forEachMatchingEvent(const std::vector<nlohmann::json>& events, const nlohmann::json& filters, F&& f) {
   for (const auto& event : events) {
-    auto json = nlohmann::json::parse(event);
-    if (const bool match = matchesAnyFilter(json, filters); match) {
+    if (const bool match = matchesAnyFilter(event, filters); match) {
       f(event);
     }
   }

@@ -11,7 +11,7 @@ class RelayServer {
   WsServer _wsServer;
   int _nextConnId = 0;
   std::unordered_map<int, RelayConnection> _connIdToRelay;
-  std::vector<std::string> _events;
+  std::vector<nlohmann::json> _events;
 public:
   RelayServer(int port) {
     _wsServer.set_access_channels(websocketpp::log::alevel::none);

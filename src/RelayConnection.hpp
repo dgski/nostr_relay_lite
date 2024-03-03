@@ -12,13 +12,13 @@
 // Manages a single relay relationship
 class RelayConnection {
   std::function<void(const std::string&)> _sendMessage;
-  std::vector<std::string>& _events;
+  std::vector<nlohmann::json>& _events;
   std::unordered_map<std::string, nlohmann::json> _subscriptions;
 public:
   RelayConnection(
     std::function<void(const std::string&)>&& sendMessage,
     std::function<void()>&& closeConnection,
-    std::vector<std::string>& events
+    std::vector<nlohmann::json>& events
   ) : _sendMessage(sendMessage), _events(events) {}
 
   void handleMessage(const std::string& msg) {
@@ -38,8 +38,8 @@ public:
     auto subId = json[1].get<std::string>();
     auto filters = json[2];
     addSubscription(subId, filters);
-    Utils::forEachMatchingEvent(_events, filters, [this, subId](const std::string& event) {
-      _sendMessage(nlohmann::json::array({ "EVENT", subId, nlohmann::json::parse(event) }).dump());
+    Utils::forEachMatchingEvent(_events, filters, [this, subId](auto& event) {
+      _sendMessage(nlohmann::json::array({ "EVENT", subId, event }).dump());
     });
     _sendMessage(nlohmann::json::array({ "EOSE", subId }).dump());
   }
