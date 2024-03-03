@@ -1,10 +1,8 @@
 #include <unordered_map>
-
 #include <cxxopts.hpp>
 
 #include "RelayConnection.hpp"
 #include "RelayServer.hpp"
-
 
 int main(int argc, const char* argv[]) {
   cxxopts::Options options("nostr_relay_lite", "Simple relay server for Nostr");
