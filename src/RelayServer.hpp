@@ -10,7 +10,7 @@ using WsServer = websocketpp::server<websocketpp::config::asio>;
 class RelayServer {
   WsServer _wsServer;
   int _nextConnId = 0;
-  std::unordered_map<int, RelayConnection> _connIdToRelay;
+  std::unordered_map<int, std::unique_ptr<RelayConnection>> _connIdToRelay;
   std::vector<nlohmann::json> _events;
 public:
   RelayServer(int port) {
@@ -37,11 +37,11 @@ public:
       _wsServer.close(connHandle, websocketpp::close::status::normal, "Done");
       _connIdToRelay.erase(connId);
     };
-    auto& relay = _connIdToRelay.emplace(
-      connId, RelayConnection(sendMessage, closeConnection, _events)).first->second;
+    auto relay = _connIdToRelay.emplace(
+      connId, std::make_unique<RelayConnection>(sendMessage, closeConnection, _events)).first->second.get();
     auto connection = _wsServer.get_con_from_hdl(connHandle);
-    connection->set_message_handler([&relay](auto connHandle, auto msg) {
-      relay.handleMessage(msg->get_payload());
+    connection->set_message_handler([relay](auto connHandle, auto msg) {
+      relay->handleMessage(msg->get_payload());
     });
     connection->set_close_handler([this, connId](auto connHandle) {
       _connIdToRelay.erase(connId);
